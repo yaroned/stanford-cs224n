@@ -27,16 +27,40 @@ def softmax(x):
     x -- You are allowed to modify x in-place
     """
     orig_shape = x.shape
-
+    # print x.shape
+    # print len(x.shape)
     if len(x.shape) > 1:
         # Matrix
         ### YOUR CODE HERE
-        raise NotImplementedError
+        # print "maxi with shpae"
+        maxi = np.max(x, axis=1)
+        # print maxi
+        # print "nex axis"
+        # print np.newaxis
+        x = np.exp(x - maxi[:, np.newaxis])
+        # print "x with shape"
+        # print x
+        x = x/np.sum(x, keepdims=True, axis=1)
         ### END YOUR CODE
     else:
         # Vector
         ### YOUR CODE HERE
-        raise NotImplementedError
+        maxi = np.max(x, axis=0)
+        # print "x is"
+        # print x
+        print ("maxi =")
+        # print maxi
+        print ("maxi -x=")
+        
+        print (x - maxi)
+        x = np.exp(x - maxi) # reminder s(x+c) == s(x) where c is -maxxi
+
+        print x
+        x = x/np.sum(x, axis=0)
+        print "answer"
+        print x
+        print orig_shape
+        print "end answer"
         ### END YOUR CODE
 
     assert x.shape == orig_shape
@@ -76,9 +100,23 @@ def test_softmax():
     This function will not be called by the autograder, nor will
     your tests be graded.
     """
+    # test if we translated our softmax by the max
     print "Running your tests..."
-    ### YOUR CODE HERE
-    raise NotImplementedError
+    test = softmax(np.array([[10000, 10000, 10000, 10000]]))
+    print test
+    ans = np.array([0.25, 0.25, 0.25, 0.25])
+    assert np.allclose(test, ans, rtol=1e-05, atol=1e-06)
+
+    # test if dimension are consistent + softmax stable version
+    # test important --> allow me to see that I needed to add keepdims=True in line 36
+    print "Running your tests..."
+    test = softmax(np.array([[10000, 10000, 10000, 10000],
+                             [10000, 10000, 10000, 10000]]))
+    print test
+    ans = np.array([[0.25, 0.25, 0.25, 0.25],
+                    [0.25, 0.25, 0.25, 0.25]])
+    assert np.allclose(test, ans, rtol=1e-05, atol=1e-06)
+
     ### END YOUR CODE
 
 
